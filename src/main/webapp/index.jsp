@@ -1,6 +1,11 @@
-<%@ page import="com.khakimov.quest.model.Question" %>
-<%@ page import="com.khakimov.quest.model.PlayerState" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    // Если открыли index.jsp напрямую - перенаправляем на сервлет
+    if (request.getAttribute("scene") == null) {
+        response.sendRedirect("game");
+        return;
+    }
+%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
