@@ -65,14 +65,72 @@ public class GameServlet extends HttpServlet {
             session.setAttribute("playerState", playerState);
         }
 
-        // Обработка ввода имени
+        Integer currentSceneId = (Integer) session.getAttribute("currentSceneId");
+        if (currentSceneId == null) {
+            currentSceneId = 0;
+            session.setAttribute("currentSceneId", currentSceneId);
+        }
+
+        // 1. Обработка ввода имени
         String playerName = request.getParameter("playerName");
         if (playerName != null && !playerName.trim().isEmpty()) {
             playerState.setName(playerName.trim());
             session.setAttribute("currentSceneId", 1); // Переход к сцене 1
         }
 
-        // Обработка перезапуска
+        // 2. Обработка выбора действия
+        String actionIdParam = request.getParameter("actionId");
+        if (actionIdParam != null) {
+            try {
+                int actionId = Integer.parseInt(actionIdParam);
+
+                // Получаем текущую сцену
+                Question currentScene = GameStorage.scenes.get(currentSceneId);
+                if (currentScene != null) {
+                    // Ищем выбранное действие
+                    GameAction selectedAction = null;
+                    for (GameAction action : currentScene.getActions()) {
+                        if (action.getActionId() == actionId) {
+                            selectedAction = action;
+                            break;
+                        }
+                    }
+
+                    // Выполняем действие
+                    if (selectedAction != null) {
+                        GameResult result = selectedAction.execute(playerState);
+                        // ОБНОВЛЯЕМ текущую сцену на основе результата действия
+                        session.setAttribute("currentSceneId", result.getNextSceneId());
+
+                        // Сохраняем сообщение для отображения
+                        if (result.getMessage() != null && !result.getMessage().isEmpty()) {
+                            session.setAttribute("actionMessage", result.getMessage());
+                        }
+                    }
+                }
+            } catch (NumberFormatException e) {
+                // Логируем ошибку, но продолжаем работу
+                System.err.println("Invalid actionId: " + actionIdParam);
+            }
+        }
+
+        if (currentSceneId == 99 && "991".equals(actionIdParam)) {
+            // Полная очистка состояния игрока
+            playerState.getFlags().clear();
+            playerState.getInventory().clear();
+            playerState.setName(null);
+
+            // Очищаем сообщения
+            session.removeAttribute("actionMessage");
+
+            // Устанавливаем пролог
+            session.setAttribute("currentSceneId", 0);
+
+            response.sendRedirect("game");
+            return;
+        }
+
+        //  Обработка перезапуска
         if (request.getParameter("restart") != null) {
             session.invalidate();
         }

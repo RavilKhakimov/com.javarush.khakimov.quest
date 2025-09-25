@@ -6,10 +6,12 @@ public class PlayerState {
     private String name;
     private Set<String> flags; // Флаги состояний (hasPitchfork, hasKnockedDoor и т.д.)
     private Map<String, Integer> inventory; // Инвентарь: предмет -> количество
+    private int gamesPlayed; //счетчик
 
     public PlayerState() {
         this.flags = new HashSet<>();
         this.inventory = new HashMap<>();
+        this.gamesPlayed = 0;
     }
 
     // Работа с флагами
@@ -50,8 +52,31 @@ public class PlayerState {
     }
 
     // Геттеры и сеттеры
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public Set<String> getFlags() { return flags; }
-    public Map<String, Integer> getInventory() { return inventory; }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Set<String> getFlags() {
+        return flags;
+    }
+
+    public Map<String, Integer> getInventory() {
+        return inventory;
+    }
+
+    public int getGamesPlayed() {
+        return gamesPlayed;
+    }
+
+    public void setGamesPlayed(int gamesPlayed) {
+        this.gamesPlayed = gamesPlayed;
+    }
+
+    public void incrementGamesPlayed() {
+        this.gamesPlayed++;
+    }
 }

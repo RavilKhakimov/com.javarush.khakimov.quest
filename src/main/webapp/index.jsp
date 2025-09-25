@@ -86,7 +86,12 @@
 <div class="container my-4 game-container">
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
-            <h1 class="h3 mb-0">Будь как дома, путник.</h1>
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">Будь как дома, путник.</h1>
+                <c:if test="${scene.id != 0}">
+                    <span class="badge bg-light text-dark">Игра №: ${playerState.gamesPlayed}</span>
+                </c:if>
+            </div>
         </div>
 
         <div class="card-body">
@@ -146,14 +151,19 @@
                             <h5 class="mb-2">Выберите действие:</h5>
                             <div class="actions-list">
                                 <c:forEach var="action" items="${scene.actions}">
-                                    <div class="form-check action-choice">
-                                        <input class="form-check-input" type="radio"
-                                               name="actionId" value="${action.actionId}"
-                                               id="action${action.actionId}" required>
-                                        <label class="form-check-label" for="action${action.actionId}">
-                                                ${action.text}
-                                        </label>
-                                    </div>
+                                    <c:set var="isPitchforkAction" value="${action.actionId == 13}" />
+                                    <c:set var="hasPitchfork" value="${playerState.hasFlag('hasPitchfork')}" />
+
+                                    <c:if test="${!(isPitchforkAction and hasPitchfork)}">
+                                        <div class="form-check action-choice">
+                                            <input class="form-check-input" type="radio"
+                                                   name="actionId" value="${action.actionId}"
+                                                   id="action${action.actionId}" required>
+                                            <label class="form-check-label" for="action${action.actionId}">
+                                                    ${action.text}
+                                            </label>
+                                        </div>
+                                    </c:if>
                                 </c:forEach>
                             </div>
                             <button type="submit" class="btn btn-success btn-submit w-100">
