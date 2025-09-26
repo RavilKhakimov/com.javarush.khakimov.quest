@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RestartGameAction extends GameAction {
-    private int actionId;
-    private String text;
     private int nextSceneId;
 
     public RestartGameAction(int actionId, String text, int nextSceneId) {

@@ -4,17 +4,17 @@ import java.util.*;
 
 public class PlayerState {
     private String name;
-    private Set<String> flags; // Флаги состояний (hasPitchfork, hasKnockedDoor и т.д.)
+    private Set<String> flags; // Флаги
     private Map<String, Integer> inventory; // Инвентарь: предмет -> количество
     private int gamesPlayed; //счетчик
 
     public PlayerState() {
         this.flags = new HashSet<>();
         this.inventory = new HashMap<>();
-        this.gamesPlayed = 0;
+        this.gamesPlayed = 1;
     }
 
-    // Работа с флагами
+    // флаги
     public void setFlag(String flag) {
         flags.add(flag);
     }
@@ -27,7 +27,7 @@ public class PlayerState {
         flags.remove(flag);
     }
 
-    // Работа с инвентарем
+    // инвентарь
     public void addItem(String item) {
         inventory.put(item, inventory.getOrDefault(item, 0) + 1);
     }
