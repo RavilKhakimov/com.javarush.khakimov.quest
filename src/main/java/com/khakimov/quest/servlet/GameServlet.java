@@ -1,5 +1,6 @@
 package com.khakimov.quest.servlet;
 
+import com.khakimov.quest.model.GameSessionState;
 import com.khakimov.quest.model.PlayerState;
 import com.khakimov.quest.model.Question;
 import com.khakimov.quest.model.actions.GameAction;
@@ -31,18 +32,15 @@ public class GameServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(true);
-        PlayerState playerState = getOrCreatePlayerState(session);
-        int currentSceneId = getCurrentSceneId(session);
+        PlayerState playerState = gameService.getOrCreatePlayerState(session);
+        int currentSceneId = gameService.getCurrentSceneId(session);
 
-        // фильтрованные сцены
+        // Используем сервис для получения сцены
         Question currentScene = gameService.getFilteredScene(currentSceneId, playerState);
-        if (currentScene == null) {
-            currentScene = GameStorage.scenes.get(0);
-        }
-        // помещает объект в запрос под именем "scene"
+
         request.setAttribute("scene", currentScene);
         request.setAttribute("playerState", playerState);
-        // передает управление и данные JSP-файлу
+
         RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
         dispatcher.forward(request, response);
     }
@@ -52,82 +50,33 @@ public class GameServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        PlayerState playerState = getOrCreatePlayerState(session);
-        int currentSceneId = getCurrentSceneId(session);
+        PlayerState playerState = gameService.getOrCreatePlayerState(session);
+        int currentSceneId = gameService.getCurrentSceneId(session);
 
-        // Обработка ввода имени
+        GameSessionState gameState;
+
+        // 1. Обработка ввода имени
         String playerName = request.getParameter("playerName");
         if (playerName != null && !playerName.trim().isEmpty()) {
-            playerState.setName(playerName.trim());
-            session.setAttribute("currentSceneId", 1);
+            gameState = gameService.handlePlayerName(playerName, playerState);
+        }
+        // 2. Обработка выбора действия
+        else if (request.getParameter("actionId") != null) {
+            String actionIdParam = request.getParameter("actionId");
+            gameState = gameService.handleGameAction(actionIdParam, currentSceneId, playerState, session);
+        }
+        // 3. Обработка перезапуска
+        else if (request.getParameter("restart") != null) {
+            gameState = gameService.handleRestart(playerState);
+        }
+        // 4. Если ничего не выбрано - остаемся на текущей сцене
+        else {
+            gameState = new GameSessionState(playerState, currentSceneId, null);
         }
 
-        // Обработка выбора действия
-        String actionIdParam = request.getParameter("actionId");
-        if (actionIdParam != null) {
-            try {
-                int actionId = Integer.parseInt(actionIdParam);
-                Question currentScene = GameStorage.scenes.get(currentSceneId);
-
-                if (currentScene != null) {
-                    GameAction selectedAction = findActionById(currentScene, actionId);
-
-                    if (selectedAction != null) {
-                        //для действия поиска грибов
-                        if (selectedAction instanceof SearchMushroomsAction) {
-                            String message = gameService.searchForMushrooms(playerState);
-                            session.setAttribute("actionMessage", message);
-                            // Остаемся на текущей сцене (лес)
-                            session.setAttribute("currentSceneId", currentSceneId);
-                        }
-                        // Обычные действия
-                        else {
-                            GameResult result = selectedAction.execute(playerState);
-                            session.setAttribute("currentSceneId", result.getNextSceneId());
-
-                            if (result.getMessage() != null && !result.getMessage().isEmpty()) {
-                                session.setAttribute("actionMessage", result.getMessage());
-                            }
-                        }
-                    }
-                }
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid actionId: " + actionIdParam);
-            }
-        }
-
-        // 3. перезапуск
-        if (request.getParameter("restart") != null) {
-            session.invalidate();
-        }
+        // Обновляем сессию через сервис
+        gameService.updateSession(session, gameState);
 
         response.sendRedirect("game");
-    }
-
-    private PlayerState getOrCreatePlayerState(HttpSession session) {
-        PlayerState playerState = (PlayerState) session.getAttribute("playerState");
-        if (playerState == null) {
-            playerState = new PlayerState();
-            session.setAttribute("playerState", playerState);
-        }
-        return playerState;
-    }
-
-    private int getCurrentSceneId(HttpSession session) {
-        Integer currentSceneId = (Integer) session.getAttribute("currentSceneId");
-        if (currentSceneId == null) {
-            currentSceneId = 0;
-            session.setAttribute("currentSceneId", currentSceneId);
-        }
-        return currentSceneId;
-    }
-
-    private GameAction findActionById(Question scene, int actionId) {
-        for (GameAction action : scene.getActions()) {
-            if (action.getActionId() == actionId) {
-                return action;
-            }
-        }
-        return null;
     }
 }

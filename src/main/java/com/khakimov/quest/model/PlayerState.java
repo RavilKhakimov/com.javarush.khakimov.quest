@@ -1,20 +1,17 @@
 package com.khakimov.quest.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.util.*;
 
+@Data
+@NoArgsConstructor
 public class PlayerState {
     private String name;
-    private Set<String> flags; // Флаги
-    private Map<String, Integer> inventory; // Инвентарь: предмет -> количество
-    private int gamesPlayed; //счетчик
+    private Set<String> flags = new HashSet<>();
+    private Map<String, Integer> inventory = new HashMap<>();
+    private int gamesPlayed = 1;
 
-    public PlayerState() {
-        this.flags = new HashSet<>();
-        this.inventory = new HashMap<>();
-        this.gamesPlayed = 1;
-    }
-
-    // флаги
     public void setFlag(String flag) {
         flags.add(flag);
     }
@@ -27,7 +24,6 @@ public class PlayerState {
         flags.remove(flag);
     }
 
-    // инвентарь
     public void addItem(String item) {
         inventory.put(item, inventory.getOrDefault(item, 0) + 1);
     }
@@ -49,31 +45,6 @@ public class PlayerState {
 
     public int getItemCount(String item) {
         return inventory.getOrDefault(item, 0);
-    }
-
-    // Геттеры и сеттеры
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<String> getFlags() {
-        return flags;
-    }
-
-    public Map<String, Integer> getInventory() {
-        return inventory;
-    }
-
-    public int getGamesPlayed() {
-        return gamesPlayed;
-    }
-
-    public void setGamesPlayed(int gamesPlayed) {
-        this.gamesPlayed = gamesPlayed;
     }
 
     public void incrementGamesPlayed() {

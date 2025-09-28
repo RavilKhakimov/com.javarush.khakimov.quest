@@ -14,7 +14,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .game-container { max-width: 800px; margin: 0 auto; }
+        .game-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
         .scene-text {
             white-space: pre-wrap;
             background-color: #f8f9fa;
@@ -24,14 +28,21 @@
             line-height: 1.5;
             margin-bottom: 15px;
         }
-        .actions-list { margin: 10px 0; }
+
+        .actions-list {
+            margin: 10px 0;
+        }
+
         .form-check.action-choice {
             margin-bottom: 5px;
             padding: 8px 10px;
             border-radius: 4px;
             border: 1px solid #dee2e6;
         }
-        .form-check.action-choice:hover { background-color: #f1f3f4; }
+
+        .form-check.action-choice:hover {
+            background-color: #f1f3f4;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -131,7 +142,7 @@
 
 <script src="/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const playerNameField = document.getElementById('playerName');
         if (playerNameField) {
             playerNameField.focus();
