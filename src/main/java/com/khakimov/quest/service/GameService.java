@@ -113,7 +113,7 @@ public class GameService {
         Integer currentSceneId = (Integer) session.getAttribute("currentSceneId");
         if (currentSceneId == null) {
             currentSceneId = 0;
-            session.getAttribute("currentSceneId");
+            session.setAttribute("currentSceneId", currentSceneId);
         }
         return currentSceneId;
     }

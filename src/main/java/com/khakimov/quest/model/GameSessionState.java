@@ -11,7 +11,6 @@ package com.khakimov.quest.model;
             this.actionMessage = actionMessage;
         }
 
-        // Геттеры
         public PlayerState getPlayerState() { return playerState; }
         public int getCurrentSceneId() { return currentSceneId; }
         public String getActionMessage() { return actionMessage; }
