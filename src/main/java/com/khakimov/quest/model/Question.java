@@ -15,38 +15,30 @@ public class Question {
         this.actions = actions;
     }
 
-    // Геттеры
+    public Question() {
+    }
+
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getText() {
         return text;
     }
 
-    public List<GameAction> getActions() {
-        return actions;
-    }
-
-    // Сеттеры (если нужны)
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void setText(String text) {
         this.text = text;
     }
 
-    public void setActions(List<GameAction> actions) {
-        this.actions = actions;
+    public List<GameAction> getActions() {
+        return actions;
     }
 
-    @Override
-    public String toString() {
-        return "Question{" +
-                "id=" + id +
-                ", text='" + text + '\'' +
-                ", actions=" + actions +
-                '}';
+    public void setActions(List<GameAction> actions) {
+        this.actions = actions;
     }
 }

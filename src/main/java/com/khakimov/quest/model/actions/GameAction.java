@@ -16,7 +16,6 @@ public abstract class GameAction {
     // Главный метод, который выполняет действие
     public abstract GameResult execute(PlayerState playerState);
 
-    // Геттеры
     public int getActionId() { return actionId; }
     public String getText() { return text; }
 }

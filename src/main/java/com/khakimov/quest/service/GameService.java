@@ -9,10 +9,8 @@ import com.khakimov.quest.model.results.GameResult;
 import com.khakimov.quest.storage.GameStorage;
 import jakarta.servlet.http.HttpSession;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.Random;
+
 
 public class GameService {
 
@@ -113,7 +111,7 @@ public class GameService {
         Integer currentSceneId = (Integer) session.getAttribute("currentSceneId");
         if (currentSceneId == null) {
             currentSceneId = 0;
-            session.getAttribute("currentSceneId");
+            session.setAttribute("currentSceneId", currentSceneId);
         }
         return currentSceneId;
     }

@@ -10,7 +10,6 @@ public class GameResult {
         this.message = message;
     }
 
-    // Геттеры
     public int getNextSceneId() { return nextSceneId; }
     public String getMessage() { return message; }
 }
